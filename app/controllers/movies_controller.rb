@@ -25,6 +25,10 @@ class MoviesController < ApplicationController
     else
       @movies = Movie.all
     end 
+    
+    if params[:ratings] then
+      @movies = @movies.where(:rating => params[:ratings].keys)
+    end
   end
 
   def new
