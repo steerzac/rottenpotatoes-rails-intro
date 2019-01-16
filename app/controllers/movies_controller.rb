@@ -15,13 +15,17 @@ class MoviesController < ApplicationController
     @hilite = {:title => false, :rating => false, :release_date => false}
     @checked = {}
     
+    # Update session with params
+    session[:ratings] = params[:ratings] if params[:ratings]
+    session[:sort_by] = params[:sort_by] if params[:sort_by]
+    
     # Begin with all movies
     @movies = Movie.all
-    
+
     # Filter out those by ratings
-    if params[:ratings] then
-      @movies = @movies.where(:rating => params[:ratings].keys)
-      params[:ratings].keys.each do |rating|
+    if session[:ratings] then
+      @movies = @movies.where(:rating => session[:ratings].keys)
+      session[:ratings].keys.each do |rating|
         @checked[rating] = true
       end
     else
@@ -31,13 +35,13 @@ class MoviesController < ApplicationController
     end 
     
     # Sort remaining movies by column
-    if params[:sort_by] == "Movie Title" then
+    if session[:sort_by] == "Movie Title" then
       @movies = @movies.order(:title)
       @hilite[:title] = true
-    elsif params[:sort_by] == "Rating" then
+    elsif session[:sort_by] == "Rating" then
       @movies = @movies.order(:rating)
       @hilite[:rating] = true
-    elsif params[:sort_by] == "Release Date" then
+    elsif session[:sort_by] == "Release Date" then
       @movies = @movies.order(:release_date)
       @hilite[:release_date] = true
     end 
